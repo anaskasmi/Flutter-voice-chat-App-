@@ -1,6 +1,6 @@
 # my_project_name
 
-A new Flutter project.
+Chat app using flutter, provider, Firebase.
 
 ## Getting Started
 
