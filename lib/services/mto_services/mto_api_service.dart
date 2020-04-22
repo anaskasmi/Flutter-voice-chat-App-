@@ -1,17 +1,15 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:my_project_name/utilities/appExceptions.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-class ApiService {
+class MTOApiService {
   String token;
   String baseUrl = "mytaxioffice.com";
   String path = "api";
   //constructor
-  ApiService({@required this.token}) {
-    assert(this.token != null);
-  }
+  MTOApiService({this.token});
+
 //checking if response is valide
   dynamic _returnResponse(http.Response response) {
     Logger().i("evaluating response ...  ");
@@ -52,10 +50,16 @@ class ApiService {
     }
 
     try {
-      final response = await http.get(uri, headers: {
-        'Authorization': 'Bearer $this.token',
-        'Accept': 'application/json'
-      });
+      var response;
+      if (this.token != null) {
+        response = await http.get(uri, headers: {
+          'Authorization': 'Bearer $this.token',
+          'Accept': 'application/json'
+        });
+      } else {
+        response = await http.get(uri, headers: {'Accept': 'application/json'});
+      }
+
       responseJson = _returnResponse(response);
       return responseJson;
     } on Exception {
@@ -65,16 +69,21 @@ class ApiService {
     }
   }
 
-  Future<http.Response> httpPost(String endPoint, Object body) async {
+  Future<dynamic> httpPost(String endPoint, Object body) async {
     Logger().e("Http POST initialized ");
 
     Uri uri = Uri.https(baseUrl, '$this.path/$endPoint');
     var responseJson;
     try {
-      final response = await http.post(uri, body: body, headers: {
-        'Authorization': 'Bearer $token',
-        'Accept': 'application/json'
-      });
+      var response;
+      if (this.token != null) {
+        response = await http.get(uri, headers: {
+          'Authorization': 'Bearer $this.token',
+          'Accept': 'application/json'
+        });
+      } else {
+        response = await http.get(uri, headers: {'Accept': 'application/json'});
+      }
       responseJson = _returnResponse(response);
       return responseJson;
     } catch (e) {
@@ -89,8 +98,13 @@ class ApiService {
     var request = http.MultipartRequest('POST', uri);
     request.fields['duration'] = duration;
     request.files.add(await http.MultipartFile.fromPath(fieldName, filePath));
-    request.headers.addAll(
-        {'Authorization': 'Bearer $token', 'Accept': 'application/json'});
+
+    if (this.token != null) {
+      request.headers.addAll(
+          {'Authorization': 'Bearer $token', 'Accept': 'application/json'});
+    } else {
+      request.headers.addAll({'Accept': 'application/json'});
+    }
     try {
       request.send().then((response) {
         print('finish sending : ' + response.toString());
