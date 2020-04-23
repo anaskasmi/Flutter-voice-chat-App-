@@ -28,6 +28,10 @@ class MTOApiService {
         Logger().e("response 403 ERROR  Unauthorised ...  ");
 
         throw UnauthorisedException(response.body.toString());
+      case 404:
+        Logger().e("response 403 ERROR  Unauthorised ...  ");
+
+        throw UnauthorisedException(response.body.toString());
       default:
         Logger().e("response ${response.statusCode} Uknown Error ...  ");
 
@@ -38,22 +42,22 @@ class MTOApiService {
 
   //http get methode
   Future<dynamic> httpGet(String endPoint, {Map<String, String> query}) async {
-    Logger().e("Http GET initialized ");
+    Logger().i("Http GET initialized ");
 
     Uri uri;
     var responseJson;
 
     if (query != null) {
-      uri = Uri.https(baseUrl, '$this.path/$endPoint', query);
+      uri = Uri.https(baseUrl, '$path/$endPoint', query);
     } else {
-      uri = Uri.https(baseUrl, '$this.path/$endPoint');
+      uri = Uri.https(baseUrl, '$path/$endPoint');
     }
 
     try {
       var response;
       if (this.token != null) {
         response = await http.get(uri, headers: {
-          'Authorization': 'Bearer $this.token',
+          'Authorization': 'Bearer $token',
           'Accept': 'application/json'
         });
       } else {
@@ -61,40 +65,44 @@ class MTOApiService {
       }
 
       responseJson = _returnResponse(response);
+
       return responseJson;
     } on Exception {
       throw FetchDataException('An Error Has accured');
     } catch (e) {
-      Logger().e("catch : http get error accured ");
+      Logger().e("catch : http get error accured " + e.toString());
     }
   }
 
   Future<dynamic> httpPost(String endPoint, Object body) async {
-    Logger().e("Http POST initialized ");
+    Logger().i("Http POST initialized ");
 
-    Uri uri = Uri.https(baseUrl, '$this.path/$endPoint');
+    Uri uri = Uri.https(baseUrl, '$path/$endPoint');
     var responseJson;
     try {
       var response;
       if (this.token != null) {
-        response = await http.get(uri, headers: {
-          'Authorization': 'Bearer $this.token',
+        response = await http.post(uri, body: body, headers: {
+          'Authorization': 'Bearer $token',
           'Accept': 'application/json'
         });
       } else {
-        response = await http.get(uri, headers: {'Accept': 'application/json'});
+        response = await http
+            .post(uri, body: body, headers: {'Accept': 'application/json'});
       }
+
       responseJson = _returnResponse(response);
+
       return responseJson;
     } catch (e) {
-      Logger().e("catch : http POST error accured ");
+      Logger().e("catch : http POST error accured => " + e.toString());
     }
   }
 
   Future<http.StreamedResponse> httpPostWithFile(String endPoint,
       String filePath, String fieldName, String duration) async {
     Logger().e("Http POST WITH FILE initialized ");
-    Uri uri = Uri.https(baseUrl, '$this.path/$endPoint');
+    Uri uri = Uri.https(baseUrl, '$path/$endPoint');
     var request = http.MultipartRequest('POST', uri);
     request.fields['duration'] = duration;
     request.files.add(await http.MultipartFile.fromPath(fieldName, filePath));
@@ -132,7 +140,8 @@ class MTOApiService {
         }
       });
     } catch (e) {
-      Logger().e("catch : http Post With File Error ");
+      Logger().e("catch : http Post With File Error " + e.toString());
     }
+    return null;
   }
 }

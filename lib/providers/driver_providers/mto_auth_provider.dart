@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:my_project_name/models/driver.dart';
 import 'package:my_project_name/services/mto_services/mto_auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logger/logger.dart';
 
-class AuthProvider with ChangeNotifier {
+class DriverMTOAuthProvider with ChangeNotifier {
   Driver _currentDriver;
 
   MTOAuthService _mtoAuthService = MTOAuthService();
@@ -45,6 +44,7 @@ class AuthProvider with ChangeNotifier {
       } else {
         _isAuth = false;
         notifyListeners();
+        return false;
       }
     } catch (e) {
       return false;
@@ -52,17 +52,16 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> tryAutoLogin() async {
-    if (getToken() == null) {
+    if (await getToken() == null) {
+      Logger().i('No Token Found');
       return false;
     }
     //todo : check expiry date
     if (await getDriver()) {
       _isAuth = true;
-      notifyListeners();
       return true;
     } else {
       _isAuth = false;
-      notifyListeners();
       return false;
     }
   }
@@ -71,12 +70,14 @@ class AuthProvider with ChangeNotifier {
     var token = await getToken();
     if (token != null) {
       var data = await _mtoAuthService.getDriver(mtoToken: token);
+
       if (!data.containsKey("error")) {
         _isAuth = true;
         this._currentDriver = createDriverObjectFromMap(data);
         notifyListeners();
         return true;
       } else {
+        Logger().w("not logged in");
         return false;
       }
     } else {
@@ -139,6 +140,7 @@ class AuthProvider with ChangeNotifier {
   Future<String> getToken() async {
     _prefs = await SharedPreferences.getInstance();
     var token = _prefs.getString('mto_access_token');
+
     if (token == null) {
       _isAuth = false;
     }
