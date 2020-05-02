@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-class VoiceMessage implements Comparable {
-  int id;
+class VoiceMessage {
   int durationInSec;
   String ownerId;
   String ownerFullName;
@@ -9,7 +8,6 @@ class VoiceMessage implements Comparable {
   int createdAt;
   String pictureUrl;
   VoiceMessage({
-    this.id,
     this.durationInSec,
     this.ownerId,
     this.ownerFullName,
@@ -17,8 +15,7 @@ class VoiceMessage implements Comparable {
     this.createdAt,
     this.pictureUrl,
   }) {
-    id ??= 0;
-    durationInSec ??= 100;
+    durationInSec ??= 0;
     ownerId ??= "";
     ownerFullName ??= "";
     url ??= "";
@@ -36,7 +33,6 @@ class VoiceMessage implements Comparable {
     String pictureUrl,
   }) {
     return VoiceMessage(
-      id: id ?? this.id,
       durationInSec: durationInSec ?? this.durationInSec,
       ownerId: ownerId ?? this.ownerId,
       ownerFullName: ownerFullName ?? this.ownerFullName,
@@ -48,7 +44,6 @@ class VoiceMessage implements Comparable {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'durationInSec': durationInSec,
       'ownerId': ownerId,
       'ownerFullName': ownerFullName,
@@ -62,7 +57,6 @@ class VoiceMessage implements Comparable {
     if (map == null) return null;
 
     return VoiceMessage(
-      id: map['id'],
       durationInSec: map['durationInSec'],
       ownerId: map['ownerId'],
       ownerFullName: map['ownerFullName'],
@@ -78,7 +72,7 @@ class VoiceMessage implements Comparable {
 
   @override
   String toString() {
-    return 'VoiceMessage(id: $id, durationInSec: $durationInSec, ownerId: $ownerId, ownerFullName: $ownerFullName, url: $url, createdAt: $createdAt, pictureUrl: $pictureUrl)';
+    return 'VoiceMessage(durationInSec: $durationInSec, ownerId: $ownerId, ownerFullName: $ownerFullName, url: $url, createdAt: $createdAt, pictureUrl: $pictureUrl)';
   }
 
   @override
@@ -86,7 +80,6 @@ class VoiceMessage implements Comparable {
     if (identical(this, o)) return true;
 
     return o is VoiceMessage &&
-        o.id == id &&
         o.durationInSec == durationInSec &&
         o.ownerId == ownerId &&
         o.ownerFullName == ownerFullName &&
@@ -96,30 +89,8 @@ class VoiceMessage implements Comparable {
   }
 
   @override
-  int compareTo(other) {
-    if (this.id == null || other == null) {
-      return null;
-    }
-
-    if (this.id < other.id) {
-      return 1;
-    }
-
-    if (this.id > other.id) {
-      return -1;
-    }
-
-    if (this.id == other.id) {
-      return 0;
-    }
-
-    return null;
-  }
-
-  @override
   int get hashCode {
-    return id.hashCode ^
-        durationInSec.hashCode ^
+    return durationInSec.hashCode ^
         ownerId.hashCode ^
         ownerFullName.hashCode ^
         url.hashCode ^

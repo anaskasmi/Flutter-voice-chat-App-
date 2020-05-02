@@ -19,6 +19,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
 
   @override
   void didChangeDependencies() {
+    SizeConfig().init(context);
     //initializing authProvider
     this.authProvider ??= Provider.of<DriverMTOAuthProvider>(context);
     //initializing currentDriver
