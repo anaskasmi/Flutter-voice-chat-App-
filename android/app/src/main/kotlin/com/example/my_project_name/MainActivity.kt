@@ -1,4 +1,4 @@
-package com.example.my_project_name
+package com.mytaxioffice.chilliwalcktaxiradio
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

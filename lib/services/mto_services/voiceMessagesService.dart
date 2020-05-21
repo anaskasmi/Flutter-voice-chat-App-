@@ -41,7 +41,7 @@ class VoiceMessagesService {
       //upload document
       FireBaseMtoApiService('voice_messages')
           .updateDocumentByReference(documentReference, {
-        'file_path': fileURL,
+        'file_path': fileURL+".mp3",
       });
     });
   }
