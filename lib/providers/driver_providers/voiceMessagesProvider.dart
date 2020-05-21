@@ -1,26 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
-import 'package:my_project_name/models/voice_message.dart';
 import 'package:my_project_name/services/mto_services/databaseService.dart';
-import 'package:my_project_name/services/mto_services/voiceMessagesService.dart';
 import 'package:vibration/vibration.dart';
 
 class VoiceMessagesProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
   final dbService = DatabaseService.instance;
-  final VoiceMessagesService _voiceMessagesService = VoiceMessagesService();
-  List<Map<String, dynamic>> _currentVoiceMessages =
-      new List<Map<String, dynamic>>();
-  List<Map<String, dynamic>> _latestNewVoiceMessages =
-      new List<Map<String, dynamic>>();
   bool isPlaying = false;
   bool alreadyFetchedAudios;
-  int currentMessageId;
+  String currentMessageId;
   bool isLoading = false;
   bool playSoundNotification = true;
   bool get getIsPlaying {
@@ -43,7 +35,7 @@ class VoiceMessagesProvider with ChangeNotifier {
     return this.audioPlayer.state;
   }
 
-  Future<void> playAudio(String audioUrl, int id) async {
+  Future<void> playAudio(String audioUrl, String id) async {
     this.isLoading = true;
     this.currentMessageId = id;
     notifyListeners();

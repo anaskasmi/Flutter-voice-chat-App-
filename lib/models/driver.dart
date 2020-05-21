@@ -25,6 +25,7 @@ class Driver {
   String spFileUrl;
   String createdAt;
   String updatedAt;
+  bool isAllowedToUseChat;
   Driver({
     this.id,
     this.badgeId,
@@ -50,6 +51,7 @@ class Driver {
     this.spFileUrl,
     this.createdAt,
     this.updatedAt,
+    this.isAllowedToUseChat,
   }) {
     this.firstName ??= "";
     this.lastName ??= "";
@@ -59,7 +61,7 @@ class Driver {
     this.permitExpiry ??= "";
     this.abstractExpiry ??= "";
     this.pictureUrl ??=
-        "https://mytaxioffice.com/storage/uploads/IMAGES/man.png";
+    "https://mytaxioffice.com/storage/uploads/IMAGES/man.png";
     this.homePhone ??= "";
     this.address ??= "";
     this.status ??= "";
@@ -233,28 +235,28 @@ class Driver {
   @override
   int get hashCode {
     return id.hashCode ^
-        badgeId.hashCode ^
-        firstName.hashCode ^
-        lastName.hashCode ^
-        email.hashCode ^
-        lisenceNumber.hashCode ^
-        licenseExpiry.hashCode ^
-        permitExpiry.hashCode ^
-        abstractExpiry.hashCode ^
-        pictureUrl.hashCode ^
-        homePhone.hashCode ^
-        address.hashCode ^
-        status.hashCode ^
-        licenseClass.hashCode ^
-        taxiHost.hashCode ^
-        startDate.hashCode ^
-        endDate.hashCode ^
-        licenseUrl.hashCode ^
-        permitUrl.hashCode ^
-        taxiHostUrl.hashCode ^
-        abstractUrl.hashCode ^
-        spFileUrl.hashCode ^
-        createdAt.hashCode ^
-        updatedAt.hashCode;
+    badgeId.hashCode ^
+    firstName.hashCode ^
+    lastName.hashCode ^
+    email.hashCode ^
+    lisenceNumber.hashCode ^
+    licenseExpiry.hashCode ^
+    permitExpiry.hashCode ^
+    abstractExpiry.hashCode ^
+    pictureUrl.hashCode ^
+    homePhone.hashCode ^
+    address.hashCode ^
+    status.hashCode ^
+    licenseClass.hashCode ^
+    taxiHost.hashCode ^
+    startDate.hashCode ^
+    endDate.hashCode ^
+    licenseUrl.hashCode ^
+    permitUrl.hashCode ^
+    taxiHostUrl.hashCode ^
+    abstractUrl.hashCode ^
+    spFileUrl.hashCode ^
+    createdAt.hashCode ^
+    updatedAt.hashCode;
   }
 }

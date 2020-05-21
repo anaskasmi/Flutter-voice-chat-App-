@@ -166,7 +166,8 @@ class _ConversationItemState extends State<ConversationItem> {
                           horizontal: SizeConfig.safeBlockHorizontal * 1),
                       child: Consumer<VoiceMessagesProvider>(
                           builder: (ctx, provider, _) {
-                        if ((provider.isLoading) && amPlaying) {
+                        if (((provider.isLoading) && amPlaying) ||
+                            this.widget.audioUrl == "") {
                           return IconButton(
                             iconSize: SizeConfig.safeBlockHorizontal * 7,
                             onPressed: () {},

@@ -10,7 +10,7 @@ import 'driver_screens/chilliwack_taxi_radio/chilliwack_taxi_radio_screen.dart';
 class DriverMainScreen extends StatefulWidget {
   static final routeName = 'driverMainScreen';
   final titles = ['Chilliwack Taxi Radio', 'Profile'];
-  final colors = [Colors.red, Colors.cyan];
+  final colors = [Colors.lightBlue, Colors.cyan];
   final icons = [CupertinoIcons.mic, CupertinoIcons.profile_circled];
 
   DriverMainScreen({Key key}) : super(key: key);

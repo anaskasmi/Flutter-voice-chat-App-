@@ -26,7 +26,7 @@ class _RecordButtonState extends State<RecordButton> {
   String duration = "00:00";
   Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
   Tween<double> _scaleTweenSendButton = Tween<double>(begin: 0, end: 0);
-
+  Timer limitTimer;
   @override
   Widget build(BuildContext context) {
     size.init(context);
@@ -113,13 +113,36 @@ class _RecordButtonState extends State<RecordButton> {
         },
       ),
       onTap: () {
-        if (!isRecording) {
-          Provider.of<AudioRecordProvider>(context)
-              .startRecording()
-              .then((_) {});
+        if (mounted)
           setState(() {
             this.isRecording = true;
             _scaleTween = Tween<double>(begin: 1, end: 1.4);
+          });
+
+        if (isRecording) {
+          Provider.of<AudioRecordProvider>(context).startRecording().then((_) {
+            const tick = const Duration(milliseconds: 100);
+            limitTimer?.cancel();
+            limitTimer = new Timer.periodic(tick, (timer) {
+              if (mounted)
+                setState(() {
+                  if (Provider.of<AudioRecordProvider>(context)
+                          .duration
+                          .inSeconds ==
+                      10) {
+                    this.isRecording = false;
+                    timer.cancel();
+                    BotToast.showText(text: "Sending... ");
+                    Provider.of<AudioRecordProvider>(context)
+                        .sendRecord()
+                        .then((_) {
+                      BotToast.showText(text: "sent successfully! ");
+                    });
+                    _scaleTween = Tween<double>(begin: 1.4, end: 1);
+                    _scaleTweenSendButton = Tween<double>(begin: 0, end: 1);
+                  }
+                });
+            });
           });
         }
       },
@@ -138,7 +161,6 @@ class _RecordButtonState extends State<RecordButton> {
           duration = d.inMinutes.toString().padLeft(2, '0') +
               ":" +
               d.inSeconds.toString().padLeft(2, '0');
-          print("duration :" + duration);
         });
       });
       return Text(duration,
