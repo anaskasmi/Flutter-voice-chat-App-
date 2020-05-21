@@ -168,11 +168,16 @@ class _MyConversationItemState extends State<MyConversationItem> {
                           horizontal: SizeConfig.safeBlockHorizontal * 1),
                       child: Consumer<VoiceMessagesProvider>(
                           builder: (ctx, provider, _) {
-                        if ((provider.isLoading) && amPlaying) {
+                        if (((provider.isLoading) && amPlaying) ||
+                            this.widget.audioUrl == "") {
                           return IconButton(
-                            iconSize: SizeConfig.safeBlockHorizontal * 7,
+                            iconSize: SizeConfig.safeBlockHorizontal * 2,
                             onPressed: () {},
-                            icon: Icon(Icons.av_timer),
+                            icon: CircularProgressIndicator(
+                              strokeWidth: 2.0,
+                            ),
+
+                            // Icon(Icons.av_timer),
                             color: Colors.white,
                           );
                         } else if (amPlaying) {

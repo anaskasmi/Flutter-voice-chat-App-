@@ -25,11 +25,15 @@ class FireBaseMtoApiService {
     return ref.document(id).delete();
   }
 
-  Future<DocumentReference> addDocument(Map data) {
+  Future<DocumentReference> addDocument(data) {
     return ref.add(data);
   }
 
   Future<void> updateDocument(Map data, String id) {
     return ref.document(id).updateData(data);
+  }
+
+  Future<void> updateDocumentByReference(DocumentReference docRef, data) {
+    return docRef.updateData(data);
   }
 }

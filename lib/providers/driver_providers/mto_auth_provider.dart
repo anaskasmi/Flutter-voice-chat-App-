@@ -33,7 +33,7 @@ class DriverMTOAuthProvider with ChangeNotifier {
   Future<bool> login() async {
     try {
       var response =
-          await _mtoAuthService.login(this.badgeIdInput, this.passwordInput);
+      await _mtoAuthService.login(this.badgeIdInput, this.passwordInput);
       if (!response.containsKey("error")) {
         _isAuth = true;
         //todo : add expiry date
@@ -64,6 +64,27 @@ class DriverMTOAuthProvider with ChangeNotifier {
       _isAuth = false;
       return false;
     }
+  }
+
+  Future<bool> isAllowedToUseChat() async {
+    Logger().wtf(" is allowed function called !!!");
+    var token = await getToken();
+    var data = await _mtoAuthService.getDriver(mtoToken: token);
+    if (!data.containsKey("error")) {
+      this._currentDriver = createDriverObjectFromMap(data);
+      Logger().i("is allowed value : "+_currentDriver.isAllowedToUseChat.toString());
+      if (_currentDriver.isAllowedToUseChat == true) {
+
+        return true;
+      }
+      else{
+        return false;
+      }
+
+    }
+    Logger().e("error fetching is allowed ");
+    return false;
+
   }
 
   Future<bool> getDriver() async {
@@ -121,6 +142,10 @@ class DriverMTOAuthProvider with ChangeNotifier {
       spFileUrl: data['SP_FILE_PATH'] == "" || data['SP_FILE_PATH'] == null
           ? imagePrefix + data['SP_FILE_PATH']
           : null,
+      isAllowedToUseChat:
+      data['is_able_to_use_app'] == "1"
+          ? true
+          : false,
       createdAt: data['created_at'],
       updatedAt: data['updated_at'],
     );

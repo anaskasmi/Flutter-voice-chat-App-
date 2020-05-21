@@ -9,6 +9,7 @@ import 'package:my_project_name/services/mto_services/databaseService.dart';
 import 'package:my_project_name/services/mto_services/voiceMessagesService.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AudioRecordProvider with ChangeNotifier {
   final dbService = DatabaseService.instance;
@@ -24,17 +25,15 @@ class AudioRecordProvider with ChangeNotifier {
   }
 
   Future<void> startRecording() async {
-    // assetsAudioPlayer.open(
-    //   Audio("assets/audios/start_recording.mp3"),
-    // );
     if (await Vibration.hasVibrator()) {
       Vibration.vibrate(duration: 100);
     } else {
       Logger().e("no permessions for vibrationg");
     }
-
+    //initializing recorder
     try {
-      if (await FlutterAudioRecorder.hasPermissions) {
+      if (await Permission.microphone.request().isGranted &&
+          await Permission.storage.request().isGranted) {
         String customPath = '/MyTaxOffice_audios_';
         io.Directory appDocDirectory;
         if (io.Platform.isIOS) {
@@ -52,11 +51,12 @@ class AudioRecordProvider with ChangeNotifier {
         _currentStatus = _current.status;
       } else {
         //todo : manage to ask permissions
-        Logger().wtf("Permessions must be granted to this app");
+        Logger().e("Permessions must be granted to this app");
       }
     } catch (e) {
       Logger().e("error raised while init recording :" + e);
     }
+
     try {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
@@ -71,10 +71,9 @@ class AudioRecordProvider with ChangeNotifier {
         var current = await _recorder.current(channel: 0);
         _current = current;
         _currentStatus = _current.status;
-        // notifyListeners();
       });
     } catch (e) {
-      print("error raised in start recording :" + e);
+      print("error raised in start recording :" + e.toString());
     }
   }
 
@@ -85,15 +84,10 @@ class AudioRecordProvider with ChangeNotifier {
     await stopRecord();
     voiceMessageSendingStatus = "loading";
     notifyListeners();
+
     await VoiceMessagesService()
         .storeVoiceMessages(this.finalPath, this.duration.inSeconds.toString())
         .then((response) {
-      if (response.statusCode == 200) {
-        voiceMessageSendingStatus = "sent";
-      } else {
-        voiceMessageSendingStatus = "failed";
-      }
-      voiceMessageSendingStatus = null;
       notifyListeners();
 
       print('uploaded');

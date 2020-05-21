@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class VoiceMessage {
+  String id;
   int durationInSec;
   String ownerId;
   String ownerFullName;
@@ -8,6 +9,7 @@ class VoiceMessage {
   int createdAt;
   String pictureUrl;
   VoiceMessage({
+    this.id,
     this.durationInSec,
     this.ownerId,
     this.ownerFullName,
@@ -24,7 +26,7 @@ class VoiceMessage {
   }
 
   VoiceMessage copyWith({
-    int id,
+    String id,
     int durationInSec,
     String ownerId,
     String ownerFullName,
