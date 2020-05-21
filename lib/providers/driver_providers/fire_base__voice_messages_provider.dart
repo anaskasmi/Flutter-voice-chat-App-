@@ -16,7 +16,7 @@ import 'package:my_project_name/utilities/time_utilities/time_utils.dart';
 import 'package:my_project_name/utilities/user_interface_utilities/screen_size.dart';
 
 class FireBaseVoiceMessagesProvider with ChangeNotifier {
-      String myBadgeId ="";
+  String myBadgeId = "";
 
   buildImage(imageUrl) {
     return CachedNetworkImage(
@@ -39,10 +39,12 @@ class FireBaseVoiceMessagesProvider with ChangeNotifier {
     );
   }
 
-  Stream<QuerySnapshot> get voiceMessages  {
-    DriverMTOAuthProvider().currentDriver.then((result){
+  Stream<QuerySnapshot> get voiceMessages {
+    DriverMTOAuthProvider().currentDriver.then((result) {
       myBadgeId = result.badgeId;
     });
+    final assetsAudioPlayer = AssetsAudioPlayer();
+
     Stream<QuerySnapshot> stream = Firestore.instance
         .collection("voice_messages")
         .orderBy('created_at', descending: true)
@@ -50,7 +52,8 @@ class FireBaseVoiceMessagesProvider with ChangeNotifier {
         .snapshots();
     stream.listen((querySnapshot) {
       querySnapshot.documentChanges.forEach((change) {
-        if (change.type == DocumentChangeType.modified && change.document.data['owner_id']!=myBadgeId) {
+        if (change.type == DocumentChangeType.modified &&
+            change.document.data['owner_id'] != myBadgeId) {
           AssetsAudioPlayer().open(
             Audio("assets/audios/send_record.mp3"),
           );
@@ -59,14 +62,25 @@ class FireBaseVoiceMessagesProvider with ChangeNotifier {
             title: change.document.data['owner_full_name'].toUpperCase(),
             subTitle: "Playing voice message..",
             duration: Duration(
-                seconds: int.parse(change.document.data['duration_in_sec'])+5),
+                seconds:
+                    int.parse(change.document.data['duration_in_sec']) + 5),
             hideCloseButton: true,
           );
-          // if(change.document.data['file_path'])
-          VoiceMessagesProvider().playAudio(
-          change.document.data['file_path'], change.document.documentID);
+//           VoiceMessagesProvider().playAudio(
+//              change.document.data['file_path'], change.document.documentID);
 
-          // notifyListeners();
+          try {
+              assetsAudioPlayer.open(
+              Audio.network(change.document.data['file_path'],metas: Metas(
+                title:  "Country",
+                artist: "Florent Champigny",
+                album: "CountryAlbum",
+                image: MetasImage.asset("assets/images/country.jpg"), //can be MetasImage.network
+              ),),
+            );
+          } catch (t) {
+            Logger().e('couldnt play audio');
+          }
         }
       });
     });
