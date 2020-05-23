@@ -129,7 +129,7 @@ class _RecordButtonState extends State<RecordButton> {
                   if (Provider.of<AudioRecordProvider>(context)
                           .duration
                           .inSeconds ==
-                      10) {
+                      15) {
                     this.isRecording = false;
                     timer.cancel();
                     BotToast.showText(text: "Sending... ");

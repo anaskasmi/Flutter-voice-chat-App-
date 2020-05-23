@@ -51,7 +51,7 @@ class AudioRecordProvider with ChangeNotifier {
         _currentStatus = _current.status;
       } else {
         //todo : manage to ask permissions
-        Logger().e("Permessions must be granted to this app");
+        Logger().e("Permissions must be granted to this app");
       }
     } catch (e) {
       Logger().e("error raised while init recording :" + e);

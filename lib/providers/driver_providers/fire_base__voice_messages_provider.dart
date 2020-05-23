@@ -1,4 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,17 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:my_project_name/models/driver.dart';
-import 'package:my_project_name/models/voice_message.dart';
 import 'package:my_project_name/providers/driver_providers/mto_auth_provider.dart';
-import 'package:my_project_name/providers/driver_providers/voiceMessagesProvider.dart';
-import 'package:my_project_name/screens/driver_screens/chilliwack_taxi_radio/local_widgets/conversation_item.dart';
-import 'package:my_project_name/screens/driver_screens/chilliwack_taxi_radio/local_widgets/myConversationItem.dart';
-import 'package:my_project_name/utilities/time_utilities/time_utils.dart';
 import 'package:my_project_name/utilities/user_interface_utilities/screen_size.dart';
+import 'package:audioplayers/audioplayers.dart' as AudioPlayers;
 
 class FireBaseVoiceMessagesProvider with ChangeNotifier {
   String myBadgeId = "";
+  final audioPlayer = new AudioPlayer();
+  final audioPlayers = AudioPlayers.AudioPlayer();
 
   buildImage(imageUrl) {
     return CachedNetworkImage(
@@ -68,19 +66,15 @@ class FireBaseVoiceMessagesProvider with ChangeNotifier {
           );
 //           VoiceMessagesProvider().playAudio(
 //              change.document.data['file_path'], change.document.documentID);
-
-          try {
-              assetsAudioPlayer.open(
-              Audio.network(change.document.data['file_path'],metas: Metas(
-                title:  "Country",
-                artist: "Florent Champigny",
-                album: "CountryAlbum",
-                image: MetasImage.asset("assets/images/country.jpg"), //can be MetasImage.network
-              ),),
-            );
-          } catch (t) {
-            Logger().e('couldnt play audio');
-          }
+          audioPlayers.play(change.document.data['file_path']);
+//          try {
+//              assetsAudioPlayer.open(
+//                Audio.network(change.document.data['file_path']),
+////                Audio.network("https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_2MG.mp3"),
+//              );
+//          } catch (t) {
+//            Logger().e('couldnt play audio');
+//          }
         }
       });
     });

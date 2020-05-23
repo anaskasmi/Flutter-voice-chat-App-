@@ -31,7 +31,7 @@ class VoiceMessagesService {
     StorageUploadTask uploadTask = storageReference.putFile(
       File(filePath),
       StorageMetadata(
-        contentType: 'audio/m4a',
+        contentType: 'audio/mp3',
         customMetadata: <String, String>{'file': 'audio'},
       ),
     );
